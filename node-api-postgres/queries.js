@@ -10,35 +10,46 @@ const pool = new Pool({
 const getStudents = (request, response) => {
   let query = request.query
   
-    if(JSON.stringify(query)==JSON.stringify({})){
-      pool.query('SELECT * FROM students ORDER BY id ASC', (error, results) => {
-        if (error) {
-          throw error
-        }
-        response.status(200).json(results.rows)
-      })
-    }
-    else{
-      pool.query('SELECT * FROM students WHERE name = $1', [query.search], (error, results) => {
-        if (error) {
-          throw error
-        }
-        response.status(200).json(results.rows)
-      })
-    }
-  
-  }
-
-const getStudentById = (request, response) => {
-    const id = parseInt(request.params.id)
-  
-    pool.query('SELECT * FROM students WHERE id = $1', [id], (error, results) => {
+  if(JSON.stringify(query)==JSON.stringify({})){
+    pool.query('SELECT * FROM students ORDER BY id ASC', (error, results) => {
       if (error) {
         throw error
       }
       response.status(200).json(results.rows)
     })
   }
+  else{
+    pool.query('SELECT * FROM students WHERE name = $1', [query.search], (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
+  }
+  
+  }
+
+  const getStudentById = (request, response) => {
+    const studentId = parseInt(request.params.studentId)
+  
+    pool.query('SELECT * FROM students WHERE id = $1', [studentId], (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
+}
+
+const getStudentGradesById = (request, response) => {
+    const studentId = parseInt(request.params.studentId)
+  
+    pool.query('SELECT grades FROM students WHERE id = $1', [studentId], (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
+}
 
   const createStudent = (request, response) => {
     const { name, grades } = request.body
@@ -81,6 +92,7 @@ const getStudentById = (request, response) => {
 module.exports = {
     getStudents,
     getStudentById,
+    getStudentGradesById,
     createStudent,
     updateStudent,
     deleteStudent,

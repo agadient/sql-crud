@@ -16,10 +16,11 @@ app.get('/', (request, response) => {
 })
 
 app.get('/students', db.getStudents)
-app.get('/students/:id', db.getStudentById)
+app.get('/students/:studentId', db.getStudentById)
+app.get('/grades/:studentId', db.getStudentGradesById)
 app.post('/students', db.createStudent)
-app.put('/students/:id', db.updateStudent)
-app.delete('/students/:id', db.deleteStudent)
+//app.put('/students/:id', db.updateStudent)
+//app.delete('/students/:id', db.deleteStudent)
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
