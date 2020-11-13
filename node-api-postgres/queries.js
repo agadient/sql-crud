@@ -42,7 +42,7 @@ const getStudentById = (request, response) => {
 
 const getStudentGradesById = (request, response) => {
   const studentId = parseInt(request.params.studentId)
-
+re
   pool.query('SELECT grades FROM students WHERE id = $1', [studentId], (error, results) => {
     if (error) {
       throw error
@@ -52,13 +52,13 @@ const getStudentGradesById = (request, response) => {
 }
 
 const submitGrade = (request, response) => {
-  // const studentId = parseInt(request.params.studentId)
+  const studentId = parseInt(request.params.studentId)
   const grade = request.body
 
   pool.query('INSERT INTO students (grades) VALUES ($1) WHERE id = ($2)', [grade, studentId], (error, results) => {
     if (error) {
       response.send("Could not add grade")
-    }
+    } 
     response.status(201).send(`Successfully added new grade`)
   })
 }
@@ -66,11 +66,10 @@ const submitGrade = (request, response) => {
 const createStudent = (request, response) => {
   const { name, grades } = request.body
   if (!name || grades.length === 0) {
-    request.send("Could not log student, invalid input params")
+    response.send("Could not log student, invalid input params")
     return
   }
-  console.log(grades)
-  console.log(name)
+
   pool.query('INSERT INTO students (name, grades) VALUES ($1, $2)', [name, grades], (error, results) => {
     if (error) {
       response.send("Could not add student, database error")

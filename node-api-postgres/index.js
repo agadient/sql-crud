@@ -18,7 +18,7 @@ app.get('/', (request, response) => {
 app.get('/students', db.getStudents)
 app.get('/students/:studentId', db.getStudentById)
 app.get('/grades/:studentId', db.getStudentGradesById)
-app.post('/grades', db.submitGrade)
+app.post('/grades/:studentId', db.submitGrade)
 app.post('/register', db.createStudent)
 
 //app.put('/students/:id', db.updateStudent)
