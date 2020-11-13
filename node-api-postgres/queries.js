@@ -52,7 +52,6 @@ re
 }
 
 const submitGrade = (request, response) => {
-  const studentId = parseInt(request.params.studentId)
   const grade = request.body
 
   pool.query('INSERT INTO students (grades) VALUES ($1) WHERE id = ($2)', [grade, studentId], (error, results) => {
