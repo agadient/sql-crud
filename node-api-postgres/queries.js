@@ -2,21 +2,34 @@ const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'pair',
   host: 'localhost',
-  database: 'api',
+  database: 'students',
   password: 'password',
   port: 5432,
 })
 
-const getUsers = (request, response) => {
-    pool.query('SELECT * FROM students ORDER BY id ASC', (error, results) => {
-      if (error) {
-        throw error
-      }
-      response.status(200).json(results.rows)
-    })
+const getStudents = (request, response) => {
+  let query = request.query
+  
+    if(JSON.stringify(query)==JSON.stringify({})){
+      pool.query('SELECT * FROM students ORDER BY id ASC', (error, results) => {
+        if (error) {
+          throw error
+        }
+        response.status(200).json(results.rows)
+      })
+    }
+    else{
+      pool.query('SELECT * FROM students WHERE name = $1', [query.search], (error, results) => {
+        if (error) {
+          throw error
+        }
+        response.status(200).json(results.rows)
+      })
+    }
+  
   }
 
-const getUserById = (request, response) => {
+const getStudentById = (request, response) => {
     const id = parseInt(request.params.id)
   
     pool.query('SELECT * FROM students WHERE id = $1', [id], (error, results) => {
@@ -27,7 +40,7 @@ const getUserById = (request, response) => {
     })
   }
 
-  const createUser = (request, response) => {
+  const createStudent = (request, response) => {
     const { name, grades } = request.body
   
     pool.query('INSERT INTO students (name, grades) VALUES ($1, $2)', [name, grades], (error, results) => {
@@ -38,7 +51,7 @@ const getUserById = (request, response) => {
     })
   }
 
-  const updateUser = (request, response) => {
+  const updateStudent = (request, response) => {
     const id = parseInt(request.params.id)
     const { name, grades } = request.body
   
@@ -54,7 +67,7 @@ const getUserById = (request, response) => {
     )
   }
 
-  const deleteUser = (request, response) => {
+  const deleteStudent = (request, response) => {
     const id = parseInt(request.params.id)
   
     pool.query('DELETE FROM students WHERE id = $1', [id], (error, results) => {
@@ -66,9 +79,9 @@ const getUserById = (request, response) => {
   }
 
 module.exports = {
-    getUsers,
-    getUserById,
-    createUser,
-    updateUser,
-    deleteUser,
+    getStudents,
+    getStudentById,
+    createStudent,
+    updateStudent,
+    deleteStudent,
   }
