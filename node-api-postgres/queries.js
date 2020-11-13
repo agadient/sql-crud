@@ -42,7 +42,7 @@ const getStudentById = (request, response) => {
 
 const getStudentGradesById = (request, response) => {
   const studentId = parseInt(request.params.studentId)
-re
+
   pool.query('SELECT grades FROM students WHERE id = $1', [studentId], (error, results) => {
     if (error) {
       throw error
@@ -52,13 +52,21 @@ re
 }
 
 const submitGrade = (request, response) => {
-  const grade = request.body
-
-  pool.query('INSERT INTO students (grades) VALUES ($1) WHERE id = ($2)', [grade, studentId], (error, results) => {
+  const grade = request.body.grade
+  const studentId = request.params.studentId
+  pool.query('SELECT (grades) FROM students WHERE id = $1', [studentId], (error, results) => {
     if (error) {
-      response.send("Could not add grade")
-    } 
-    response.status(201).send(`Successfully added new grade`)
+      throw error
+    } else {
+      var gradesToAdd = [grade]
+      gradesToAdd = gradesToAdd.concat(results.rows[0].grades)
+      pool.query('UPDATE students SET grades=$1 where id=$2', [gradesToAdd, studentId], (error, results) => {
+        if (error) {
+          response.send("Could not add grade")
+          return
+        } 
+        response.status(201).send(`Successfully added new grade`)
+    })}
   })
 }
 
